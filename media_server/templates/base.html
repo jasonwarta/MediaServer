@@ -1,0 +1,33 @@
+<!doctype html>
+
+<html lang="en">
+	<head>
+		{% block head %}
+
+		<title>{% block title %}{{ title }}{% endblock %}</title>
+
+		{% endblock %}
+
+		<link rel="stylesheet" href="{{ url_for('static',filename='css/styles.css') }}">
+	</head>
+
+	<body onload="bodyonload();">
+	
+		<main>
+			<div class="container {% block class %}{% endblock %}" id="container">
+				{% block content %}
+				<div id="content">
+					You should not be seeing this
+				</div>
+				{% endblock %}
+			</div>
+		</main>
+
+		<div id="footer">
+			{% block footer %}
+			{% endblock %}
+		</div>
+		<script src="{{url_for('static',filename='js/scripts.js')}}"></script>
+		
+	</body>
+</html>
