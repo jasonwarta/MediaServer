@@ -40,7 +40,7 @@ rescanFolder = (elem) => {
 	xhr.onreadystatechange = () => {
 		console.log(xhr.responseText);
 	}
-	xhr.open('POST','rescan_dir/'+elem.innerHTML.toLowerCase(),true);
+	xhr.open('POST',`rescan_dir/${elem.innerHTML.toLowerCase()}`,true);
 	xhr.send(null);
 }
 
@@ -65,11 +65,11 @@ expandVideo = (type) => {
         }
         var vid = document.createElement("video");
         if (type == 'movies') {
-	        vid.src = 'download/movies/'+elem.id;
+	        vid.src = `download/movies/${elem.id}`;
         } else {
         	let season = elem.parentElement.parentElement.children[0].innerText;
         	let series = elem.parentElement.parentElement.parentElement.children[0].innerText;
-        	vid.src = 'download/tv/'+series+'/'+season+'/'+elem.id;
+        	vid.src = `download/tv/${series}/${season}/${elem.id}`;
         }
         vid.controls = "true";
 		content.appendChild(vid);
@@ -99,7 +99,7 @@ toggleItem = () => {
 }
 
 loadContent = (elem,category,mode) => {
-	console.log(category,mode);
+	// console.log(category,mode);
 	xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = () => {
 		if(xhr.responseText) {
@@ -146,11 +146,11 @@ loadContent = (elem,category,mode) => {
 					item.appendChild(item_header);
 					item.appendChild(content);
 
-					let series = results.querySelector('#'+data[key]['series'].replace(/\'+/g, '').replace(/\s+/g, '-').toLowerCase());
+					let series = results.querySelector(`#${data[key]['series'].replace(/\'+/g, '').replace(/\s+/g, '-').toLowerCase()}`);
 					// console.log(series);
 
 					if (series) {
-						let season = series.querySelector('#'+data[key]['season'].replace(/\'+/g, '').replace(/\s+/g, '-').toLowerCase());
+						let season = series.querySelector(`#${data[key]['season'].replace(/\'+/g, '').replace(/\s+/g, '-').toLowerCase()}`);
 						// console.log(season);
 
 						if (season) {
@@ -219,7 +219,7 @@ loadContent = (elem,category,mode) => {
 					if (data.hasOwnProperty(key)){
 						var p = document.createElement('p');
 						var a = document.createElement('a');
-						a.href = 'download/books/'+data[key]['file'];
+						a.href = `download/books/${data[key]['file']}`;
 						a.innerText = data[key]['name'];
 						p.appendChild(a);
 						results.appendChild(p);
@@ -229,10 +229,10 @@ loadContent = (elem,category,mode) => {
 		}
 	};
 	if (mode == 'list'){
-		xhr.open('POST','search/'+category+'/',true);
+		xhr.open('POST',`search/${category}/`,true);
 	}
 	else if (mode == 'search'){
-		xhr.open('POST','search/'+document.getElementsByClassName('selected')[0].classList.item(0)+'/'+elem.value,true);
+		xhr.open('POST',`search/${document.getElementsByClassName('selected')[0].classList.item(0)}/${elem.value}`,true);
 	}
 	xhr.send(null);
 }

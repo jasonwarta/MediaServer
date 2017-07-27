@@ -12,7 +12,6 @@ setup(
 		'auth',
 		'bcrypt',
 		'blinker',
-		'cffi',
 		'click',
 		'decorator',
 		'enum-compat',

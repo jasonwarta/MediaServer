@@ -67,8 +67,8 @@ def download(group=None,fname=None):
 			attachment_filename=fname
 		)
 		
-@app.route('/search/<category>/',methods=['GET','POST'])
-@app.route('/search/<category>/<search_string>',methods=['GET','POST'])
+@app.route('/search/<category>/',methods=['POST'])
+@app.route('/search/<category>/<search_string>',methods=['POST'])
 def search(category=None,search_string=None):
 	if category is not None:
 		return dumps(search_db(category=category,search_string=search_string))
