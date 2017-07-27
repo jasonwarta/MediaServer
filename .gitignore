@@ -10,4 +10,3 @@ media_server/generate_streams.sh
 media_server/templates/views/stream.html
 ffmpeg.log
 index.html
-index.php
