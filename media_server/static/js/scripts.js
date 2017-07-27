@@ -146,11 +146,11 @@ loadContent = (elem,category,mode) => {
 					item.appendChild(item_header);
 					item.appendChild(content);
 
-					let series = results.querySelector(`#${data[key]['series'].replace(/^/g, 'm').replace(/\'+/g, '').replace(/\.+/g, '-').replace(/\s+/g, '-').toLowerCase()}`);
+					let series = results.querySelector(`#${data[key]['series'].replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase()}`);
 					// console.log(series);
 
 					if (series) {
-						let season = series.querySelector(`#${data[key]['season'].replace(/^/g, 'm').replace(/\'+/g, '').replace(/\.+/g, '-').replace(/\s+/g, '-').toLowerCase()}`);
+						let season = series.querySelector(`#${data[key]['season'].replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase()}`);
 
 						// console.log(season);
 
@@ -170,7 +170,7 @@ loadContent = (elem,category,mode) => {
 
 							let season = document.createElement('div');
 							season.className = 'item';
-							season.id = data[key]['season'].replace(/^/g, 'm').replace(/\'+/g, '').replace(/\.+/g, '-').replace(/\s+/g, '-').toLowerCase();
+							season.id = data[key]['season'].replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase();
 
 							season.style.display = 'none';
 
@@ -191,7 +191,7 @@ loadContent = (elem,category,mode) => {
 
 						let series = document.createElement('div');
 						series.className = 'item';
-						series.id = data[key]['series'].replace(/^/g, 'm').replace(/\'+/g, '').replace(/\.+/g, '-').replace(/\s+/g, '-').toLowerCase();
+						series.id = data[key]['series'].replace(/^/g, 'm').replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase();
 
 
 						series.appendChild(series_header);
@@ -205,7 +205,7 @@ loadContent = (elem,category,mode) => {
 
 						let season = document.createElement('div');
 						season.className = 'item';
-						season.id = data[key]['season'].replace(/^/g, 'm').replace(/\'+/g, '').replace(/\.+/g, '-').replace(/\s+/g, '-').toLowerCase();
+						season.id = data[key]['season'].replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase();
 
 						season.style.display = 'none';
 
