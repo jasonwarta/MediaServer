@@ -107,7 +107,9 @@ loadContent = (elem,category,mode) => {
 			try {
 				var data = JSON.parse(xhr.responseText);
 			} catch(e) {
-				console.log(e);
+				console.log("Error", e.stack);
+			    console.log("Error", e.name);
+			    console.log("Error", e.message);
 			}
 			// data = JSON.parse(xhr.responseText);
 			if (category == 'movies') {
