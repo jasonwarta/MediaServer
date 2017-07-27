@@ -229,7 +229,7 @@ loadContent = (elem,category,mode) => {
 		}
 	};
 	if (mode == 'list'){
-		xhr.open('POST','search/'+category,true);
+		xhr.open('POST','search/'+category+'/',true);
 	}
 	else if (mode == 'search'){
 		xhr.open('POST','search/'+document.getElementsByClassName('selected')[0].classList.item(0)+'/'+elem.value,true);

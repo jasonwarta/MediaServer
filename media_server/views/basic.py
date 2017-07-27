@@ -10,13 +10,23 @@ from bson.json_util import dumps
 from media_server import app,login_manager
 from media_server.lib import *
 
+import subprocess 
+
 @app.route('/')
 def home():
-	return render_template('views/home.html')
+	return render_template('views/home.html', title='Media')
 
 @app.route('/admin')
 def admin():
-	return render_template('views/admin.html')
+	temp_stats = subprocess.check_output(["df", "-h"], universal_newlines=True).split('\n')
+	stats = []
+	for s in temp_stats:
+		stats.append([x for x in s.split(' ') if x != ''])
+	return render_template(
+		'views/admin.html', 
+		title='Admin',
+		stats=stats
+	)
 
 @app.route('/rescan_dir/<folder>',methods=['POST'])
 def rescan_dir(folder=None):
@@ -43,7 +53,7 @@ def view_book(fname=None):
 			fname=fname
 		)
 
-@app.route('/download/<group>/<<path:></path:>fname>')
+@app.route('/download/<group>/<path:fname>')
 def download(group=None,fname=None):
 	if group is not None and fname is not None:
 		dirs = {
@@ -57,15 +67,11 @@ def download(group=None,fname=None):
 			attachment_filename=fname
 		)
 		
-@app.route('/search')
-@app.route('/search/<category>',methods=['GET','POST'])
+@app.route('/search/<category>/',methods=['GET','POST'])
 @app.route('/search/<category>/<search_string>',methods=['GET','POST'])
 def search(category=None,search_string=None):
 	if category is not None:
 		return dumps(search_db(category=category,search_string=search_string))
 	else:
-		return render_template('views/results.html')
+		return dumps({"Error":""})
 
-@app.route('/list_files&opt=<opt>',methods=['GET','POST'])
-def list_files(opt=None):
-	return None;

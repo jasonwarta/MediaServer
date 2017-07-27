@@ -15,4 +15,25 @@
 	<p>
 		<button onclick='rescanFolder(this);'>Books</button>
 	</p>
+	<p>
+		<h4>Stats</h4>
+		<table class='stats'>
+			<tr>
+				<th>Filesystem</th>
+				<th>Size</th>
+				<th>Used</th>
+				<th>Avail</th>
+				<th>Use%</th>
+				<th>Mounted on</th>
+			</tr>
+				
+			{% for line in stats[1:] %}
+				<tr>
+					{% for item in line %}
+					<td>{{item}}</td>
+					{% endfor %}
+				</tr>
+			{% endfor %}
+		</table>
+	</p>
 {% endblock %}
