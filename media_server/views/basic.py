@@ -63,7 +63,7 @@ def download(group=None,fname=None):
 		}
 		return send_file(
 			dirs[group]+fname,
-			as_attachment=True,
+			# as_attachment=True,
 			attachment_filename=fname
 		)
 		
