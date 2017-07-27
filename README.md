@@ -1,5 +1,5 @@
 # MediaServer
-### Media Server designed to run on a RaspberryPi or 
+### Media Server designed to run on a RaspberryPi or other dedicated server
   
   
 ### Installation Instructions:  
