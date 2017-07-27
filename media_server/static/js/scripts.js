@@ -104,7 +104,12 @@ loadContent = (elem,category,mode) => {
 	xhr.onreadystatechange = () => {
 		if(xhr.responseText) {
 			results.innerHTML = "";
-			data = JSON.parse(xhr.responseText);
+			try {
+				var data = JSON.parse(xhr.responseText);
+			} catch(e) {
+				console.log(e);
+			}
+			// data = JSON.parse(xhr.responseText);
 			if (category == 'movies') {
 				for (var key in data) {
 					var item = document.createElement('div');
