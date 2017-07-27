@@ -31,13 +31,13 @@ def admin():
 @app.route('/rescan_dir/<folder>',methods=['POST'])
 def rescan_dir(folder=None):
 	if folder == 'movies':
-		update_movies('/Users/jasonwarta/projects/MediaServer/media_server/movies')
+		update_movies('media_server/movies')
 		return "success"
 	elif folder == 'tv':
-		update_tv('/Users/jasonwarta/projects/MediaServer/media_server/tv')
+		update_tv('media_server/tv')
 		return "success"
 	elif folder == 'books':
-		update_books('/Users/jasonwarta/projects/MediaServer/media_server/allitebooks')
+		update_books('media_server/allitebooks')
 		return "success"
 	return "error"
 
