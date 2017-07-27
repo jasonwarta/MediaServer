@@ -151,6 +151,7 @@ loadContent = (elem,category,mode) => {
 
 					if (series) {
 						let season = series.querySelector(`#${data[key]['season'].replace(/^/g, 'm').replace(/\'+/g, '').replace(/\.+/g, '-').replace(/\s+/g, '-').toLowerCase()}`);
+
 						// console.log(season);
 
 						if (season) {
@@ -170,6 +171,7 @@ loadContent = (elem,category,mode) => {
 							let season = document.createElement('div');
 							season.className = 'item';
 							season.id = data[key]['season'].replace(/^/g, 'm').replace(/\'+/g, '').replace(/\.+/g, '-').replace(/\s+/g, '-').toLowerCase();
+
 							season.style.display = 'none';
 
 							season.appendChild(season_header);
@@ -191,6 +193,7 @@ loadContent = (elem,category,mode) => {
 						series.className = 'item';
 						series.id = data[key]['series'].replace(/^/g, 'm').replace(/\'+/g, '').replace(/\.+/g, '-').replace(/\s+/g, '-').toLowerCase();
 
+
 						series.appendChild(series_header);
 
 						let season_header = document.createElement('div');
@@ -203,6 +206,7 @@ loadContent = (elem,category,mode) => {
 						let season = document.createElement('div');
 						season.className = 'item';
 						season.id = data[key]['season'].replace(/^/g, 'm').replace(/\'+/g, '').replace(/\.+/g, '-').replace(/\s+/g, '-').toLowerCase();
+
 						season.style.display = 'none';
 
 						season.appendChild(season_header);
