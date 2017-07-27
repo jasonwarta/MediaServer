@@ -102,7 +102,7 @@ loadContent = (elem,category,mode) => {
 	// console.log(category,mode);
 	xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = () => {
-		if(xhr.responseText) {
+		if(xhr.readyState === XMLHttpRequest.DONE) {
 			results.innerHTML = "";
 			try {
 				var data = JSON.parse(xhr.responseText);
