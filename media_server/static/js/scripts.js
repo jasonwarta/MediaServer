@@ -1,9 +1,11 @@
 window.onload = () => {
-	loadContent(
-		document.getElementsByClassName('selected'),
-		'movies',
-		'list'	
-	)
+	if (document.getElementById('results')){
+		loadContent(
+			document.getElementsByClassName('selected'),
+			'movies',
+			'list'	
+		)
+	}
 };
 
 bodyonload = () => {	
@@ -65,11 +67,11 @@ expandVideo = (type) => {
         }
         var vid = document.createElement("video");
         if (type == 'movies') {
-	        vid.src = `download/movies/${elem.id}`;
+	        vid.src = `movies/${elem.id}`;
         } else {
         	let season = elem.parentElement.parentElement.children[0].innerText;
         	let series = elem.parentElement.parentElement.parentElement.children[0].innerText;
-        	vid.src = `download/tv/${series}/${season}/${elem.id}`;
+        	vid.src = `tv/${series}/${season}/${elem.id}`;
         }
         vid.controls = "true";
 		content.appendChild(vid);
@@ -230,7 +232,7 @@ loadContent = (elem,category,mode) => {
 					if (data.hasOwnProperty(key)){
 						var p = document.createElement('p');
 						var a = document.createElement('a');
-						a.href = `download/books/${data[key]['file']}`;
+						a.href = `books/${data[key]['file']}`;
 						a.innerText = data[key]['name'];
 						p.appendChild(a);
 						results.appendChild(p);

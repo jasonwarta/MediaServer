@@ -1,6 +1,7 @@
-from flask import Flask,render_template,request,url_for,redirect,jsonify,flash,abort, send_from_directory,send_file
+from flask import Flask,render_template,request,url_for,redirect,jsonify,flash,abort, send_from_directory,send_file,Response
 from flask_login import login_required,current_user
 from werkzeug import secure_filename
+import os
 from os import path,makedirs,rename
 from uuid import uuid4
 
@@ -61,11 +62,36 @@ def download(group=None,fname=None):
 			'tv' 		: 'tv/',
 			'movies'	: 'movies/' 
 		}
-		return send_file(
-			dirs[group]+fname,
+		# r = requests.get(dirs[group]+fname, stream=True)
+		# return Response(r.iter_content(chunk_size=10*1024),
+			# content_type=r.headers['Content-Type'])
+		return Response(open('media_server/'+dirs[group]+fname), direct_passthrough=True)
+		# return send_file(
+			# dirs[group]+fname,
 			# as_attachment=True,
-			attachment_filename=fname
-		)
+			# attachment_filename=fname
+		# )
+		# 
+
+@app.route('/stream/<path:fname>')
+def stream(fname=None):
+	if fname is not None:
+		request_id = str(uuid4())
+		directory = 'media_server/streams/'+request_id
+		if not path.exists(directory):
+			os.makedirs(directory)
+		if not path.exists(directory+"/segments"):
+			os.makedirs(directory+"/segments")
+		p = subprocess.Popen(["media_server/generate_streams.sh",request_id,'media_server/'+fname])
+	return render_template(
+		'views/stream.html',
+		source="streams/"+request_id+"/stream.m3u8"
+	)
+
+@app.route('/streams/<uuid>/stream.m3u8')
+def streams(uuid):
+	return send_file('streams/'+uuid+'/stream.m3u8')
+
 		
 @app.route('/search/<category>/',methods=['POST'])
 @app.route('/search/<category>/<search_string>',methods=['POST'])

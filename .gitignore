@@ -5,3 +5,8 @@ share/*
 .Python
 pip-selfcheck.json
 media_server.egg-info
+media_server/streams
+media_server/generate_streams.sh
+media_server/templates/views/stream.html
+ffmpeg.log
+index.html
