@@ -51,9 +51,10 @@ collapse_content = (elem) => {
 	elem.classList.remove('expanded');
 }
 
-expand_video = (type) => {
-	let elem = event.target;
+expand_video = (event) => {
+	let elem = event.target||event.srcElement;
 	let content = elem.parentElement.children[1];
+	let type = document.getElementsByClassName('selected')[0].classList[0];
 
 	if(elem.classList.contains('expanded') ){
 		collapse_content(elem);
@@ -65,8 +66,7 @@ expand_video = (type) => {
         let vid = document.createElement("video");
         vid.controls = "true";
         vid.addEventListener('error', () => {
-        	let content = event.target.parentElement;
-        	console.log()
+        	let content = event.target.parentElement.children[1];
         	content.innerHTML = "";
         	p = document.createElement('p');
         	p.className = "error";
@@ -86,9 +86,8 @@ expand_video = (type) => {
     }
 }
 
-toggle_item = () => {
-	let elem = event.target;
-	// let content = elem.parentElement.children;
+toggle_item = (event) => {
+	let elem = event.target||event.srcElement;
 	let content = Array.from(elem.parentElement.children);
 
 	if (elem.classList.contains('show')){
@@ -131,8 +130,8 @@ load_content = (category,mode) => {
 					header = document.createElement('div');
 					header.className = 'header';
 					header.id = entry['file'];
-					header.addEventListener('click',() => {
-						expand_video('movies');
+					header.addEventListener('click',(event) => {
+						expand_video(event);
 					});
 					header.innerText = entry['name'];
 
@@ -153,8 +152,8 @@ load_content = (category,mode) => {
 					let item_header = document.createElement('div');
 					item_header.className = 'header hide';
 					item_header.id = data[key]['file'];
-					item_header.addEventListener('click',() => {
-						expand_video('tv');
+					item_header.addEventListener('click',(event) => {
+						expand_video(event);
 					});
 					item_header.innerText = data[key]['name'];
 
@@ -176,8 +175,8 @@ load_content = (category,mode) => {
 							let season_header = document.createElement('div');
 							season_header.className = 'header hide';
 							season_header.innerText = data[key]['season'];
-							season_header.addEventListener('click',() => {
-								toggle_item();
+							season_header.addEventListener('click',(event) => {
+								toggle_item(event);
 							});
 
 							let season = document.createElement('div');
@@ -195,8 +194,8 @@ load_content = (category,mode) => {
 						let series_header = document.createElement('div');
 						series_header.className = 'header hide';
 						series_header.innerText = data[key]['series'];
-						series_header.addEventListener('click',() => {
-							toggle_item();
+						series_header.addEventListener('click',(event) => {
+							toggle_item(event);
 						});
 
 						let series = document.createElement('div');
@@ -209,8 +208,8 @@ load_content = (category,mode) => {
 						let season_header = document.createElement('div');
 						season_header.className = 'header hide';
 						season_header.innerText = data[key]['season'];
-						season_header.addEventListener('click',() => {
-							toggle_item();
+						season_header.addEventListener('click',(event) => {
+							toggle_item(event);
 						});
 
 						let season = document.createElement('div');
