@@ -63,3 +63,8 @@ video {
 .stats th,td {
 	text-align: left;
 }
+
+.error {
+	padding-left:100px;
+	font-size:1.3em;
+}

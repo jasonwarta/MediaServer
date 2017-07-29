@@ -1,7 +1,6 @@
 window.onload = () => {
 	if (document.getElementById('results')){
-		loadContent(
-			document.getElementsByClassName('selected'),
+		load_content(
 			'movies',
 			'list'	
 		)
@@ -12,33 +11,33 @@ bodyonload = () => {
 
 };
 
-search = (elem) => {
-	if (elem.value.length >= 3){
-		loadContent(
-			elem,
+search = () => {
+	let search = document.getElementById('search');
+
+	if (search.value.length >= 3){
+		// reduce unneceesary queries with large quantities of results
+		load_content(
 			document.getElementsByClassName('selected')[0].classList.item(0),
 			'search'
 		);
 	} else {
-		loadContent(
-			elem,
+		load_content(
 			document.getElementsByClassName('selected')[0].classList.item(0),
 			'list'
 		);
 	}
 };
 
-force_search = (elem) => {
-	var search_box = document.getElementsByTagName('button')[0].parentElement.children[0];
-	loadContent(
-		search_box,
+force_search = () => {
+	// this is only called when the search button is pressed
+	load_content(
 		document.getElementsByClassName('selected')[0].classList.item(0),
 		'search'
 	);
 }
 
-rescanFolder = (elem) => {
-	xhr = new XMLHttpRequest();
+rescan_folder = (elem) => {
+	let xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = () => {
 		console.log(xhr.responseText);
 	}
@@ -46,26 +45,35 @@ rescanFolder = (elem) => {
 	xhr.send(null);
 }
 
-collapseContent = (elem) => {
-	var parent = elem.parentElement;
-	var content = parent.children[1];
+collapse_content = (elem) => {
+	let content = elem.parentElement.children[1];
 	content.innerHTML = "";
 	elem.classList.remove('expanded');
 }
 
-expandVideo = (type) => {
-	elem = event.target;
-	var parent = elem.parentElement;
-	var content = parent.children[1];
+expand_video = (type) => {
+	let elem = event.target;
+	let content = elem.parentElement.children[1];
 
 	if(elem.classList.contains('expanded') ){
-		collapseContent(elem);
+		collapse_content(elem);
 	} else {
-        var old_elems = document.getElementsByClassName('expanded');
-        for(var i = 0; i < old_elems.length; i++){
-            collapseContent(old_elems[i]);
+        let old_elems = document.getElementsByClassName('expanded');
+        for(let i = 0; i < old_elems.length; i++){
+            collapse_content(old_elems[i]);
         }
-        var vid = document.createElement("video");
+        let vid = document.createElement("video");
+        vid.controls = "true";
+        vid.addEventListener('error', () => {
+        	let content = event.target.parentElement;
+        	console.log()
+        	content.innerHTML = "";
+        	p = document.createElement('p');
+        	p.className = "error";
+        	p.innerText = `Sorry, "${content.parentElement.children[0].innerText}" was not found.`;
+        	content.appendChild(p);
+        });
+
         if (type == 'movies') {
 	        vid.src = `movies/${elem.id}`;
         } else {
@@ -73,36 +81,38 @@ expandVideo = (type) => {
         	let series = elem.parentElement.parentElement.parentElement.children[0].innerText;
         	vid.src = `tv/${series}/${season}/${elem.id}`;
         }
-        vid.controls = "true";
 		content.appendChild(vid);
         elem.classList.add('expanded');
     }
 }
 
-toggleItem = () => {
-	elem = event.target;
-	var parent = elem.parentElement;
-	var content = parent.children;
+toggle_item = () => {
+	let elem = event.target;
+	// let content = elem.parentElement.children;
+	let content = Array.from(elem.parentElement.children);
 
 	if (elem.classList.contains('show')){
-		for(var i = 1; i < content.length; i++){
-			content[i].style.display = 'none';
-		}
+		content.forEach( (entry,index) => {
+			if(index >= 1){
+				entry.style.display = 'none';
+			}
+		});
 		elem.classList.remove('show');
 		elem.classList.add('hide');
 
 	} else if (elem.classList.contains('hide')){
-		for(var i = 1; i < content.length; i++){
-			content[i].style.display = 'block';
-		}
+		content.forEach( (entry,index) => {
+			if(index >= 1){
+				entry.style.display = 'block';
+			}
+		});
 		elem.classList.remove('hide');
 		elem.classList.add('show');
 	}
 }
 
-loadContent = (elem,category,mode) => {
-	// console.log(category,mode);
-	xhr = new XMLHttpRequest();
+load_content = (category,mode) => {
+	let xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = () => {
 		if(xhr.readyState === XMLHttpRequest.DONE) {
 			results.innerHTML = "";
@@ -113,29 +123,28 @@ loadContent = (elem,category,mode) => {
 			    console.log("Error", e.name);
 			    console.log("Error", e.message);
 			}
-			// data = JSON.parse(xhr.responseText);
 			if (category == 'movies') {
-				for (var key in data) {
-					var item = document.createElement('div');
+				data.forEach( (entry) => {
+					let item = document.createElement('div');
 					item.className = "item"
 
 					header = document.createElement('div');
 					header.className = 'header';
-					header.id = data[key]['file'];
+					header.id = entry['file'];
 					header.addEventListener('click',() => {
-						expandVideo('movies');
+						expand_video('movies');
 					});
-					header.innerText = data[key]['name'];
+					header.innerText = entry['name'];
 
 					content = document.createElement('div');
 					content.className = 'content';
 					item.appendChild(header);
 					item.appendChild(content);
 					results.appendChild(item);
-				}
+				});
 			}
 			else if (category == 'tv') {
-				for (var key in data) {
+				for (let key in data) {
 
 					let item = document.createElement('div');
 					item.className = "item";
@@ -145,7 +154,7 @@ loadContent = (elem,category,mode) => {
 					item_header.className = 'header hide';
 					item_header.id = data[key]['file'];
 					item_header.addEventListener('click',() => {
-						expandVideo('tv');
+						expand_video('tv');
 					});
 					item_header.innerText = data[key]['name'];
 
@@ -156,25 +165,19 @@ loadContent = (elem,category,mode) => {
 					item.appendChild(content);
 
 					let series = results.querySelector(`#${data[key]['series'].replace(/^/g, 'm').replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase()}`);
-					// console.log(series);
 
 					if (series) {
 						let season = series.querySelector(`#${data[key]['season'].replace(/^/g, 'm').replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase()}`);
 
-						// console.log(season);
-
 						if (season) {
-							// console.log('season already exists, adding item : '+data[key]['name'])
 							season.appendChild(item);
 
 						} else {
-							// console.log('created new season : '+data[key]['season']);
-
 							let season_header = document.createElement('div');
 							season_header.className = 'header hide';
 							season_header.innerText = data[key]['season'];
 							season_header.addEventListener('click',() => {
-								toggleItem();
+								toggle_item();
 							});
 
 							let season = document.createElement('div');
@@ -189,13 +192,11 @@ loadContent = (elem,category,mode) => {
 							series.appendChild(season);
 						}
 					} else {
-						// console.log('created new series : '+ data[key]['series']);
-
 						let series_header = document.createElement('div');
 						series_header.className = 'header hide';
 						series_header.innerText = data[key]['series'];
 						series_header.addEventListener('click',() => {
-							toggleItem();
+							toggle_item();
 						});
 
 						let series = document.createElement('div');
@@ -209,7 +210,7 @@ loadContent = (elem,category,mode) => {
 						season_header.className = 'header hide';
 						season_header.innerText = data[key]['season'];
 						season_header.addEventListener('click',() => {
-							toggleItem();
+							toggle_item();
 						});
 
 						let season = document.createElement('div');
@@ -228,10 +229,10 @@ loadContent = (elem,category,mode) => {
 				}
 			}
 			else if (category == 'books') {
-				for (var key in data) {
+				for (let key in data) {
 					if (data.hasOwnProperty(key)){
-						var p = document.createElement('p');
-						var a = document.createElement('a');
+						let p = document.createElement('p');
+						let a = document.createElement('a');
 						a.href = `books/${data[key]['file']}`;
 						a.innerText = data[key]['name'];
 						p.appendChild(a);
@@ -245,13 +246,13 @@ loadContent = (elem,category,mode) => {
 		xhr.open('POST',`search/${category}/`,true);
 	}
 	else if (mode == 'search'){
-		xhr.open('POST',`search/${document.getElementsByClassName('selected')[0].classList.item(0)}/${elem.value}`,true);
+		xhr.open('POST',`search/${document.getElementsByClassName('selected')[0].classList.item(0)}/${document.getElementById('search').value}`,true);
 	}
 	xhr.send(null);
 }
 
-switchTab = (elem) => {
-	var category;
+switch_tab = (elem) => {
+	let category;
 	if (elem.classList.contains('movies')) {
 		category = 'movies';
 	} else if (elem.classList.contains('tv')) {
@@ -260,9 +261,10 @@ switchTab = (elem) => {
 		category = 'books';
 	}
 
-	loadContent(elem,category,'list');
+	load_content(category,'list');
 
 	document.getElementById('search').value = "";
+
 	document.getElementsByClassName("selected")[0].classList.remove("selected");
 	elem.classList.add("selected");
 }

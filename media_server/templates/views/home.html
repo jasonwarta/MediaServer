@@ -2,11 +2,11 @@
 
 {% block content %}
 	<ul class='tabs'>
-		<li class="movies selected" onclick="switchTab(this);">Movies</li>
-		<li class="tv" onclick="switchTab(this);">TV</li>
-		<li class="books" onclick="switchTab(this)">Books</li>
+		<li class="movies selected" onclick="switch_tab(this);">Movies</li>
+		<li class="tv" onclick="switch_tab(this);">TV</li>
+		<li class="books" onclick="switch_tab(this)">Books</li>
 		<li class="search">
-			<input id='search' type="text" onkeyup="search(this);" placeholder="Search" /> <button onclick="force_search(this);">Search</button>
+			<input id='search' type="text" onkeyup="search();" placeholder="Search" /> <button onclick="force_search();">Search</button>
 		</li>
 	</ul>
 	
