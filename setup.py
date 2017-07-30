@@ -37,6 +37,7 @@ setup(
 		'validators',
 		'watchdog',
 		'wheel',
+		'pymodm',
 		'uwsgi'
 	]
 )

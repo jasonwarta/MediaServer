@@ -1,117 +1,88 @@
 import sys
 import re
 from pymongo import MongoClient, ASCENDING
+from pymodm import connect
+from bson import Binary, Code
+from bson.json_util import dumps
 
-def connect_to_db(db_name):
-	try:
-		client = MongoClient(host="localhost",port=27017)
-	except Exception(e):
-		sys.stderr.write("Could not connect to MongoDB: %s" % e)
-		sys.exit(1)
+from media_server.lib.file_utils import *
+from media_server.lib.models import *
 
-	db = client[str(db_name)]
-
-	if str(db).find(str(client)) != -1:
-		return db
+def get_results(Object=None,query_obj=None):
+	if Object is not None and query_obj is not None:
+		results = Object.objects.raw(query_obj)
+		json_results = []
+		for item in results:
+			json_results.append(dumps(item.to_son()))
+		return json_results
 	else:
-		sys.stderr.write("Error connecting to DB")
+		print("get_results called without an Object or query")
+		return None
 
-	return None
+def get_all(Object=None):
+	if Object is not None:
+		results = Object.objects.all()
+		json_results = []
+		for item in results:
+			json_results.append(dumps(item.to_son()))
+		return json_results
+	else:
+		print("get_all was called without an Object")
+		return None
 
-def update_books(file_path=None):
-	from media_server.lib.file_utils import rescan_base_dir
-
-	db = connect_to_db('books')
-	books = db['books']
-
-	files_list = rescan_base_dir(file_path)
-
-	for item in files_list:
-		books.update(
-			{
-				"name" : item['name']
-			},
-			{
-				"path" : item['path'],
-				"file" : item['file'],
-				"name" : item['name']
-			},
-			upsert=True
-		)
-	return "success"
-
-def get_books_list():
-	db = connect_to_db('books')
-	return db['books'].find()
-
-def search_db(category=None, search_string=None):
-	db = connect_to_db(category)
-
+def search_db(collection=None, search_string=None):
 	if search_string is not None:
 		query = re.compile(search_string, re.IGNORECASE)
 
-		if category == 'tv':
-			return db[str(category)].find({"name" : query}).sort([
-				('series', ASCENDING ),
-				('season', ASCENDING ),
-				('name'  , ASCENDING )
-			])
-		
-		return db[str(category)].find({"name" : query})
+		if collection == 'movies':
+			return get_results(Movie, {"name" : query})
+		elif collection == 'tv':
+			return get_results(TV, {"name" : query})
+		elif collection == 'books':
+			return get_results(Book, {"name" : query})
+		return "Invalid Collection: " + collection
 	else:
-		if category == 'tv':
-			return db[str(category)].find().sort([
-				('series', ASCENDING ),
-				('season', ASCENDING ),
-				('name'  , ASCENDING )
-			])
-		return db[str(category)].find()
+		if collection == 'movies':
+			return get_all(Movie)
+		elif collection == 'tv':
+			return get_all(TV)
+		elif collection == 'books':
+			return get_all(Book)
+		return "Invalid Collection: " + collection
 
-def update_movies(file_path=None):
-	from media_server.lib.file_utils import rescan_base_dir
-
-	db = connect_to_db('movies')
-	movies = db['movies']
-
+def update_books(file_path=None):
 	files_list = rescan_base_dir(file_path)
 
 	for item in files_list:
-		movies.update(
-			{
-				"name" : item['name']
-			},
-			{
-				"path" : item['path'],
-				"file" : item['file'],
-				"name" : item['name']
-			},
-			upsert=True
-		)
+		Book(
+			name = item['name'],
+			path = item['path'],
+			file = item['file']
+		).save()
+	return "success"
+
+def update_movies(file_path=None):
+	files_list = rescan_base_dir(file_path)
+
+	for item in files_list:
+		Movie(
+			name = item['name'],
+			path = item['path'],
+			file = item['file']
+		).save()
 	return "success"
 
 def update_tv(file_path=None):
-	from media_server.lib.file_utils import rescan_base_dir
-
-	db = connect_to_db('tv')
-	tv = db['tv']
-
 	files_list = rescan_base_dir(file_path)
 
 	for item in files_list:
 		details = item['path'].split('/')[-3:]
-		tv.update(
-			{
-				"name" : item['name']
-			},
-			{
-				"path" : item['path'],
-				"file" : item['file'],
-				"name" : item['name'],
-				"series" : details[0],
-				"season" : details[1],
-				"episode" : details[2]
-				
-			},
-			upsert=True
-		)
+		TV(
+			path    = item['path'],
+			file    = item['file'],
+			name    = item['name'],
+			series  = details[0],
+			season  = details[1],
+			episode = details[2]
+		).save()
 	return "success"

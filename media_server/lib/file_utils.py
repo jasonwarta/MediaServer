@@ -24,11 +24,11 @@ def name(fname):
 
 def list_files(folder):
 	list_of_files =[]
-	stdout.write("Indexing "+folder)
+	stdout.write("Indexing "+folder+"\n")
 	for root,dirs,files in walk(folder):
 		path = root.split(sep)
 		for file in files:
-			if name(file)[0:2] != "._" and name(file) != '.DS_Store':
+			if file[0] != '.':
 				list_of_files.append({
 					'path': '/'.join(path)+'/'+file,
 					'file': file,

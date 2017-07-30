@@ -1,5 +1,4 @@
 from flask import Flask,render_template,request,url_for,redirect,jsonify,flash,abort, send_from_directory,send_file,Response
-from flask_login import login_required,current_user
 from werkzeug import secure_filename
 import os
 from os import path,makedirs,rename
@@ -8,7 +7,7 @@ from uuid import uuid4
 from bson import Binary, Code
 from bson.json_util import dumps
 
-from media_server import app,login_manager
+from media_server import app
 from media_server.lib import *
 
 import subprocess 
@@ -19,10 +18,14 @@ def home():
 
 @app.route('/admin')
 def admin():
-	temp_stats = subprocess.check_output(["df", "-h"], universal_newlines=True).split('\n')
-	stats = []
-	for s in temp_stats:
-		stats.append([x for x in s.split(' ') if x != ''])
+	try:
+		temp_stats = subprocess.check_output(["df", "-h"], universal_newlines=True).split('\n')
+		stats = []
+		for s in temp_stats:
+			stats.append([x for x in s.split(' ') if x != ''])
+	except Exception as e:
+		temp_stats = e
+		pass
 	return render_template(
 		'views/admin.html', 
 		title='Admin',
@@ -93,11 +96,11 @@ def rescan_dir(folder=None):
 # 	return send_file('streams/'+uuid+'/stream.m3u8')
 
 		
-@app.route('/search/<category>/',methods=['POST'])
-@app.route('/search/<category>/<search_string>',methods=['POST'])
-def search(category=None,search_string=None):
-	if category is not None:
-		return dumps(search_db(category=category,search_string=search_string))
+@app.route('/search/<collection>/',methods=['POST'])
+@app.route('/search/<collection>/<search_string>',methods=['POST'])
+def search(collection=None,search_string=None):
+	if collection is not None:
+		return dumps(search_db(collection=collection,search_string=search_string))
 	else:
 		return dumps({"Error":""})
 

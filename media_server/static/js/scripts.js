@@ -115,6 +115,7 @@ load_content = (category,mode) => {
 	xhr.onreadystatechange = () => {
 		if(xhr.readyState === XMLHttpRequest.DONE) {
 			results.innerHTML = "";
+			data = xhr.responseText;
 			try {
 				var data = JSON.parse(xhr.responseText);
 			} catch(e) {
@@ -124,6 +125,8 @@ load_content = (category,mode) => {
 			}
 			if (category == 'movies') {
 				data.forEach( (entry) => {
+					entry = JSON.parse(entry);
+
 					let item = document.createElement('div');
 					item.className = "item"
 
@@ -143,7 +146,8 @@ load_content = (category,mode) => {
 				});
 			}
 			else if (category == 'tv') {
-				for (let key in data) {
+				data.forEach( (entry) => {
+					entry = JSON.parse(entry);				
 
 					let item = document.createElement('div');
 					item.className = "item";
@@ -151,11 +155,11 @@ load_content = (category,mode) => {
 
 					let item_header = document.createElement('div');
 					item_header.className = 'header hide';
-					item_header.id = data[key]['file'];
+					item_header.id = entry['file'];
 					item_header.addEventListener('click',(event) => {
 						expand_video(event);
 					});
-					item_header.innerText = data[key]['name'];
+					item_header.innerText = entry['name'];
 
 					let content = document.createElement('div');
 					content.className = 'content';
@@ -163,10 +167,10 @@ load_content = (category,mode) => {
 					item.appendChild(item_header);
 					item.appendChild(content);
 
-					let series = results.querySelector(`#${data[key]['series'].replace(/^/g, 'm').replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase()}`);
+					let series = results.querySelector(`#${entry['series'].replace(/^/g, 'm').replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase()}`);
 
 					if (series) {
-						let season = series.querySelector(`#${data[key]['season'].replace(/^/g, 'm').replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase()}`);
+						let season = series.querySelector(`#${entry['season'].replace(/^/g, 'm').replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase()}`);
 
 						if (season) {
 							season.appendChild(item);
@@ -174,14 +178,14 @@ load_content = (category,mode) => {
 						} else {
 							let season_header = document.createElement('div');
 							season_header.className = 'header hide';
-							season_header.innerText = data[key]['season'];
+							season_header.innerText = entry['season'];
 							season_header.addEventListener('click',(event) => {
 								toggle_item(event);
 							});
 
 							let season = document.createElement('div');
 							season.className = 'item';
-							season.id = data[key]['season'].replace(/^/g, 'm').replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase();
+							season.id = entry['season'].replace(/^/g, 'm').replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase();
 
 							season.style.display = 'none';
 
@@ -193,28 +197,28 @@ load_content = (category,mode) => {
 					} else {
 						let series_header = document.createElement('div');
 						series_header.className = 'header hide';
-						series_header.innerText = data[key]['series'];
+						series_header.innerText = entry['series'];
 						series_header.addEventListener('click',(event) => {
 							toggle_item(event);
 						});
 
 						let series = document.createElement('div');
 						series.className = 'item';
-						series.id = data[key]['series'].replace(/^/g, 'm').replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase();
+						series.id = entry['series'].replace(/^/g, 'm').replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase();
 
 
 						series.appendChild(series_header);
 
 						let season_header = document.createElement('div');
 						season_header.className = 'header hide';
-						season_header.innerText = data[key]['season'];
+						season_header.innerText = entry['season'];
 						season_header.addEventListener('click',(event) => {
 							toggle_item(event);
 						});
 
 						let season = document.createElement('div');
 						season.className = 'item';
-						season.id = data[key]['season'].replace(/^/g, 'm').replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase();
+						season.id = entry['season'].replace(/^/g, 'm').replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase();
 
 						season.style.display = 'none';
 
@@ -225,19 +229,20 @@ load_content = (category,mode) => {
 
 						results.appendChild(series);
 					}
-				}
+				});
 			}
 			else if (category == 'books') {
-				for (let key in data) {
-					if (data.hasOwnProperty(key)){
+				data.forEach( (entry) => {
+					entry = JSON.parse(entry);
+					// if (data.hasOwnProperty(key)){
 						let p = document.createElement('p');
 						let a = document.createElement('a');
-						a.href = `books/${data[key]['file']}`;
-						a.innerText = data[key]['name'];
+						a.href = `books/${entry['file']}`;
+						a.innerText = entry['name'];
 						p.appendChild(a);
 						results.appendChild(p);
-					}
-				}
+					// }
+				});
 			}
 		}
 	};
