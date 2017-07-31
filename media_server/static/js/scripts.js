@@ -178,24 +178,17 @@ load_content = (category,mode) => {
 			try {
 				var data = JSON.parse(xhr.responseText);
 			} catch(e) {
-				console.log("Error", e.stack);
-			    console.log("Error", e.name);
-			    console.log("Error", e.message);
+				console.log(e);
 			}
 			if (category == 'movies') {
 				data.forEach( (entry) => {
-					entry = JSON.parse(entry);
-
-					let item = build_item(entry,false);
-					
-					results.appendChild(item);
+					results.appendChild( build_item( JSON.parse(entry), false ) );
 				});
 			}
 			else if (category == 'tv') {
 				data.forEach( (entry) => {
 					entry = JSON.parse(entry);				
-
-					let item = build_item(entry, true);
+					let item = build_item( entry, true);
 
 					let series = results.querySelector(`#${entry['series'].replace(/^/g, 'm').replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase()}`);
 
