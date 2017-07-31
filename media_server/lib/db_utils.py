@@ -61,7 +61,8 @@ def update_books(file_path=None):
 		Book(
 			name = item['name'],
 			path = item['path'],
-			file = item['file']
+			file = item['file'],
+			file_id = item['file']
 		).save()
 	return "success"
 
@@ -72,7 +73,8 @@ def update_movies(file_path=None):
 		Movie(
 			name = item['name'],
 			path = item['path'],
-			file = item['file']
+			file = item['file'],
+			file_id = item['file']
 		).save()
 	return "success"
 
@@ -87,6 +89,7 @@ def update_tv(file_path=None):
 			name    = item['name'],
 			series  = details[0],
 			season  = details[1],
-			episode = details[2]
+			episode = details[2],
+			file_id = item['file']
 		).save()
 	return "success"

@@ -25,6 +25,7 @@ class Movie(MongoModel):
 	path                 = CharField()
 	file                 = CharField()
 	name                 = CharField()
+	file_id              = CharField(primary_key=True)
 	# fields below this point are for TMDB movie queries against a movie id
 	# GET 	/movie/{movie_id}
 	# https://api.themoviedb.org/3/movie/{movie_id}?api_key=<<api_key>>&language=en-US
@@ -55,16 +56,18 @@ class Movie(MongoModel):
 
 class TV(MongoModel):
 	path	= CharField()
-	file	= CharField(primary_key=True)
+	file_id = CharField(primary_key=True)
+	file 	= CharField()
 	name	= CharField()
 	series  = CharField()
 	season  = CharField()
 	episode = CharField()
 
 class Book(MongoModel):
-	path = CharField()
-	file = CharField(primary_key=True)
-	name = CharField()
+	file_id = CharField(primary_key=True)
+	path    = CharField()
+	file    = CharField()
+	name    = CharField()
 
 # class TV(MappedClass):
 #	 class __mongometa__:
