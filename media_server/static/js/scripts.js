@@ -76,6 +76,7 @@ expand_video = (event) => {
 
         if (type == 'movies') {
 	        vid.src = `movies/${elem.id}`;
+	        // vid.poster = `http://image.tmdb.org/t/p/w185//hZVcmztCVo510FhBXyLqStiTAce.jpg`;
         } else {
         	let season = elem.parentElement.parentElement.children[0].innerText;
         	let series = elem.parentElement.parentElement.parentElement.children[0].innerText;
@@ -110,6 +111,64 @@ toggle_item = (event) => {
 	}
 }
 
+build_item = (entry,tv) => {
+	let item = document.createElement('div');
+	item.className = "item";
+	if (tv) item.style.display = 'none';
+
+	let header = document.createElement('div');
+	header.className = 'header hide';
+	header.id = entry['file'];
+	header.innerText = entry['name'];
+	header.addEventListener('click', event => {
+		expand_video(event);
+	});
+
+	let content = document.createElement('div');
+	content.className = 'content';
+
+	item.appendChild(header);
+	item.appendChild(content);
+
+	return item;
+}
+
+build_season = (entry) => {
+	let season_header = document.createElement('div');
+	season_header.className = 'header hide';
+	season_header.innerText = entry['season'];
+	season_header.addEventListener('click',(event) => {
+		toggle_item(event);
+	});
+
+	let season = document.createElement('div');
+	season.className = 'item';
+	season.id = entry['season'].replace(/^/g, 'm').replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase();
+
+	season.style.display = 'none';
+
+	season.appendChild(season_header);
+
+	return season;
+}
+
+build_series = entry => {
+	let series_header = document.createElement('div');
+	series_header.className = 'header hide';
+	series_header.innerText = entry['series'];
+	series_header.addEventListener('click',(event) => {
+		toggle_item(event);
+	});
+
+	let series = document.createElement('div');
+	series.className = 'item';
+	series.id = entry['series'].replace(/^/g, 'm').replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase();
+
+	series.appendChild(series_header);
+
+	return series;
+}
+
 load_content = (category,mode) => {
 	let xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = () => {
@@ -127,21 +186,8 @@ load_content = (category,mode) => {
 				data.forEach( (entry) => {
 					entry = JSON.parse(entry);
 
-					let item = document.createElement('div');
-					item.className = "item"
-
-					header = document.createElement('div');
-					header.className = 'header';
-					header.id = entry['file'];
-					header.addEventListener('click',(event) => {
-						expand_video(event);
-					});
-					header.innerText = entry['name'];
-
-					content = document.createElement('div');
-					content.className = 'content';
-					item.appendChild(header);
-					item.appendChild(content);
+					let item = build_item(entry,false);
+					
 					results.appendChild(item);
 				});
 			}
@@ -149,23 +195,7 @@ load_content = (category,mode) => {
 				data.forEach( (entry) => {
 					entry = JSON.parse(entry);				
 
-					let item = document.createElement('div');
-					item.className = "item";
-					item.style.display = 'none';
-
-					let item_header = document.createElement('div');
-					item_header.className = 'header hide';
-					item_header.id = entry['file'];
-					item_header.addEventListener('click',(event) => {
-						expand_video(event);
-					});
-					item_header.innerText = entry['name'];
-
-					let content = document.createElement('div');
-					content.className = 'content';
-
-					item.appendChild(item_header);
-					item.appendChild(content);
+					let item = build_item(entry, true);
 
 					let series = results.querySelector(`#${entry['series'].replace(/^/g, 'm').replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase()}`);
 
@@ -176,53 +206,16 @@ load_content = (category,mode) => {
 							season.appendChild(item);
 
 						} else {
-							let season_header = document.createElement('div');
-							season_header.className = 'header hide';
-							season_header.innerText = entry['season'];
-							season_header.addEventListener('click',(event) => {
-								toggle_item(event);
-							});
+							let season = build_season(entry);
 
-							let season = document.createElement('div');
-							season.className = 'item';
-							season.id = entry['season'].replace(/^/g, 'm').replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase();
-
-							season.style.display = 'none';
-
-							season.appendChild(season_header);
 							season.appendChild(item);
 
 							series.appendChild(season);
 						}
 					} else {
-						let series_header = document.createElement('div');
-						series_header.className = 'header hide';
-						series_header.innerText = entry['series'];
-						series_header.addEventListener('click',(event) => {
-							toggle_item(event);
-						});
-
-						let series = document.createElement('div');
-						series.className = 'item';
-						series.id = entry['series'].replace(/^/g, 'm').replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase();
-
-
-						series.appendChild(series_header);
-
-						let season_header = document.createElement('div');
-						season_header.className = 'header hide';
-						season_header.innerText = entry['season'];
-						season_header.addEventListener('click',(event) => {
-							toggle_item(event);
-						});
-
-						let season = document.createElement('div');
-						season.className = 'item';
-						season.id = entry['season'].replace(/^/g, 'm').replace(/[\',]/g, '').replace(/[\.\s]/g, '-').toLowerCase();
-
-						season.style.display = 'none';
-
-						season.appendChild(season_header);
+						let series = build_series(entry);
+						let season = build_season(entry);
+						
 						season.appendChild(item);
 
 						series.appendChild(season);
@@ -234,14 +227,13 @@ load_content = (category,mode) => {
 			else if (category == 'books') {
 				data.forEach( (entry) => {
 					entry = JSON.parse(entry);
-					// if (data.hasOwnProperty(key)){
-						let p = document.createElement('p');
-						let a = document.createElement('a');
-						a.href = `books/${entry['file']}`;
-						a.innerText = entry['name'];
-						p.appendChild(a);
-						results.appendChild(p);
-					// }
+
+					let p = document.createElement('p');
+					let a = document.createElement('a');
+					a.href = `books/${entry['file']}`;
+					a.innerText = entry['name'];
+					p.appendChild(a);
+					results.appendChild(p);
 				});
 			}
 		}
