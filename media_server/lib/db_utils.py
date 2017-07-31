@@ -40,7 +40,9 @@ def search_db(collection=None, search_string=None):
 			return get_results(TV, {"name" : query})
 		elif collection == 'books':
 			return get_results(Book, {"name" : query})
-		return "Invalid Collection: " + collection
+		else:
+			print("Invalid Collection: " + collection)
+			return "Invalid Collection: " + collection
 	else:
 		if collection == 'movies':
 			return get_all(Movie)
@@ -48,7 +50,9 @@ def search_db(collection=None, search_string=None):
 			return get_all(TV)
 		elif collection == 'books':
 			return get_all(Book)
-		return "Invalid Collection: " + collection
+		else:
+			print("Invalid Collection: " + collection)
+			return "Invalid Collection: " + collection
 
 def update_books(file_path=None):
 	files_list = rescan_base_dir(file_path)
