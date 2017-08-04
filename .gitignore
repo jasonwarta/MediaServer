@@ -8,5 +8,8 @@ media_server.egg-info
 media_server/streams
 media_server/generate_streams.sh
 media_server/templates/views/stream.html
+media_server/tv
+media_server/movies
+media_server/allitebooks
 ffmpeg.log
 index.html
