@@ -15,6 +15,19 @@ body {
 	width:100%;
 	margin:0;
 	box-shadow: -4px 4px 4px -4px rgba(0,0,0,0.7);
+	padding:30px;
+	margin-bottom:10px;
+}
+.tabs li {
+	display:inline;
+	padding:30px;
+	margin-right:10px;
+	font-size:2em;
+	cursor:pointer;
+}
+.tabs li.selected {
+	background:#dcdcdc;
+	box-shadow: inset -7px 7px 9px -7px rgba(0,0,0,0.6);
 }
 .item {
 	border-radius:15px;
@@ -37,20 +50,7 @@ img {
 	border-bottom-right-radius:13px;
 	width:100%;
 }
-ul {
-	padding:30px;
-	margin-bottom:10px;
-}
-li {
-	display:inline;
-	padding:30px;
-	margin-right:10px;
-	font-size:2em;
-}
-li.selected {
-	background:#dcdcdc;
-	box-shadow: inset -7px 7px 9px -7px rgba(0,0,0,0.6);
-}
+
 img.temp {
 	border-radius:13px;
 }
@@ -67,4 +67,9 @@ video {
 .error {
 	padding-left:100px;
 	font-size:1.3em;
+}
+
+#tagger {
+	position: relative;
+	margin-left:10px;
 }
