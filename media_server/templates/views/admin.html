@@ -4,7 +4,12 @@
 	Admin
 {% endblock %}
 
+{% block head %}
+	<script src="{{url_for('static',filename='js/file_tagger.js')}}"></script>
+{% endblock %}
+
 {% block content %}
+<div class="admin">
 	<p>Rescan Folders</p>
 	<p>
 		<button onclick='rescan_folder(this);'>Movies</button>
@@ -16,24 +21,7 @@
 		<button onclick='rescan_folder(this);'>Books</button>
 	</p>
 	<p>
-		<h4>Stats</h4>
-		<table class='stats'>
-			<tr>
-				<th>Filesystem</th>
-				<th>Size</th>
-				<th>Used</th>
-				<th>Avail</th>
-				<th>Use%</th>
-				<th>Mounted on</th>
-			</tr>
-				
-			{% for line in stats[1:] %}
-				<tr>
-					{% for item in line %}
-					<td>{{item}}</td>
-					{% endfor %}
-				</tr>
-			{% endfor %}
-		</table>
+		<div id="tagger"></div>
 	</p>
+</div>
 {% endblock %}

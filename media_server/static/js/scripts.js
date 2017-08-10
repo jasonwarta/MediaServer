@@ -5,6 +5,9 @@ window.onload = () => {
 			'list'	
 		)
 	}
+	if (document.getElementById('tagger')) {
+		new FileTagger( document.getElementById('tagger') );
+	}
 };
 
 bodyonload = () => {	
@@ -13,7 +16,7 @@ bodyonload = () => {
 
 search = () => {
 	let search = document.getElementById('search');
-
+	console.log(search.value);
 	if (search.value.length >= 3){
 		// reduce unneceesary queries with large quantities of results
 		load_content(
@@ -39,16 +42,63 @@ force_search = () => {
 rescan_folder = (elem) => {
 	let xhr = new XMLHttpRequest();
 	xhr.onreadystatechange = () => {
-		console.log(xhr.responseText);
+		if(xhr.readyState === XMLHttpRequest.DONE) {
+			console.log(xhr.responseText);
+		}
 	}
 	xhr.open('POST',`rescan_dir/${elem.innerHTML.toLowerCase()}`,true);
 	xhr.send(null);
 }
 
 collapse_content = (elem) => {
+	jwplayer().remove();
 	let content = elem.parentElement.children[1];
 	content.innerHTML = "";
 	elem.classList.remove('expanded');
+}
+
+build_jwplayer = (elem,fname) => {
+	jwplayer(elem).setup({
+		"file": fname
+	});
+}
+
+expand_movie = (event) => {
+	let elem = event.target||event.srcElement;
+	let content = elem.parentElement.children[1];
+	let type = document.getElementsByClassName('selected')[0].classList[0];
+
+	if(elem.classList.contains('expanded') ){
+		collapse_content(elem);
+	} else {
+        let old_elems = document.getElementsByClassName('expanded');
+        for(let i = 0; i < old_elems.length; i++){
+            collapse_content(old_elems[i]);
+        }
+        // let vid = document.createElement("video");
+        // vid.controls = "true";
+        // vid.addEventListener('error', () => {
+        // 	let content = event.target.parentElement.children[1];
+        // 	content.innerHTML = "";
+        // 	p = document.createElement('p');
+        // 	p.className = "error";
+        // 	p.innerText = `Sorry, "${content.parentElement.children[0].innerText}" was not found.`;
+        // 	content.appendChild(p);
+        // });
+
+        build_jwplayer(content,`movies/${elem.id}`);
+
+        // if (type == 'movies') {
+	       //  vid.src = `movies/${elem.id}`;
+	       //  // vid.poster = `http://image.tmdb.org/t/p/w185//hZVcmztCVo510FhBXyLqStiTAce.jpg`;
+        // } else {
+        // 	let season = elem.parentElement.parentElement.children[0].innerText;
+        // 	let series = elem.parentElement.parentElement.parentElement.children[0].innerText;
+        // 	vid.src = `tv/${series}/${season}/${elem.id}`;
+        // }
+		// content.appendChild(vid);
+        elem.classList.add('expanded');
+    }
 }
 
 expand_video = (event) => {
@@ -63,26 +113,29 @@ expand_video = (event) => {
         for(let i = 0; i < old_elems.length; i++){
             collapse_content(old_elems[i]);
         }
-        let vid = document.createElement("video");
-        vid.controls = "true";
-        vid.addEventListener('error', () => {
-        	let content = event.target.parentElement.children[1];
-        	content.innerHTML = "";
-        	p = document.createElement('p');
-        	p.className = "error";
-        	p.innerText = `Sorry, "${content.parentElement.children[0].innerText}" was not found.`;
-        	content.appendChild(p);
-        });
+        // let vid = document.createElement("video");
+        // vid.controls = "true";
+        // vid.addEventListener('error', () => {
+        // 	let content = event.target.parentElement.children[1];
+        // 	content.innerHTML = "";
+        // 	p = document.createElement('p');
+        // 	p.className = "error";
+        // 	p.innerText = `Sorry, "${content.parentElement.children[0].innerText}" was not found.`;
+        // 	content.appendChild(p);
+        // });
 
         if (type == 'movies') {
-	        vid.src = `movies/${elem.id}`;
+        	// expand_movie(event);
+        	build_jwplayer(content,`movies/${elem.id}`);
+	        // vid.src = `movies/${elem.id}`;
 	        // vid.poster = `http://image.tmdb.org/t/p/w185//hZVcmztCVo510FhBXyLqStiTAce.jpg`;
         } else {
         	let season = elem.parentElement.parentElement.children[0].innerText;
         	let series = elem.parentElement.parentElement.parentElement.children[0].innerText;
-        	vid.src = `tv/${series}/${season}/${elem.id}`;
+        	// vid.src = `tv/${series}/${season}/${elem.id}`;
+        	build_jwplayer(content,`tv/${series}/${season}/${elem.id}`);
         }
-		content.appendChild(vid);
+		// content.appendChild(vid);
         elem.classList.add('expanded');
     }
 }
@@ -252,7 +305,7 @@ switch_tab = (elem) => {
 
 	load_content(category,'list');
 
-	document.getElementById('search').value = "";
+	// document.getElementById('search').value = "";
 
 	document.getElementsByClassName("selected")[0].classList.remove("selected");
 	elem.classList.add("selected");

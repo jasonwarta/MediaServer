@@ -18,18 +18,9 @@ def home():
 
 @app.route('/admin')
 def admin():
-	try:
-		temp_stats = subprocess.check_output(["df", "-h"], universal_newlines=True).split('\n')
-		stats = []
-		for s in temp_stats:
-			stats.append([x for x in s.split(' ') if x != ''])
-	except Exception as e:
-		temp_stats = e
-		pass
 	return render_template(
 		'views/admin.html', 
-		title='Admin',
-		stats=stats
+		title='Admin'
 	)
 
 @app.route('/rescan_dir/<folder>',methods=['POST'])
