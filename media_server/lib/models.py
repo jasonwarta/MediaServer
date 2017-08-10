@@ -3,7 +3,7 @@ from pymongo.operations import IndexModel
 from pymodm import connect, MongoModel, EmbeddedMongoModel
 from pymodm.fields import CharField, IntegerField, BigIntegerField, ObjectIdField, BinaryField, BooleanField, DateTimeField, Decimal128Field,EmailField, FileField, ImageField, FloatField,GenericIPAddressField, URLField, UUIDField,RegularExpressionField, JavaScriptField, TimestampField,DictField, OrderedDictField, ListField, PointField,LineStringField, PolygonField, MultiPointField,MultiLineStringField, MultiPolygonField, GeometryCollectionField,EmbeddedDocumentField, EmbeddedDocumentListField, ReferenceField
 
-connect('mongodb://localhost:27017/media-server')
+connect('mongodb://localhost:27017/media-server', connect=False)
 
 class Genre(EmbeddedMongoModel):
 	id = IntegerField(primary_key=True)
