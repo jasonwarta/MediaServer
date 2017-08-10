@@ -8,9 +8,9 @@ from bson.json_util import dumps
 from media_server.lib.file_utils import *
 from media_server.lib.models import *
 
-def get_results(Object=None,query_obj=None):
+def get_results(Object=None,query_obj=None,sort=None):
 	if Object is not None and query_obj is not None:
-		results = Object.objects.raw(query_obj)
+		results = Object.objects.raw(query_obj).order_by(sort)
 		json_results = []
 		for item in results:
 			json_results.append(dumps(item.to_son()))
@@ -19,9 +19,9 @@ def get_results(Object=None,query_obj=None):
 		print("get_results called without an Object or query")
 		return None
 
-def get_all(Object=None):
+def get_all(Object=None,sort=None):
 	if Object is not None:
-		results = Object.objects.all()
+		results = Object.objects.all().order_by(sort)
 		json_results = []
 		for item in results:
 			json_results.append(dumps(item.to_son()))
@@ -35,21 +35,21 @@ def search_db(collection=None, search_string=None):
 		query = re.compile(search_string, re.IGNORECASE)
 
 		if collection == 'movies':
-			return get_results(Movie, {"name" : query})
+			return get_results(Movie, {"name" : query},[('name',ASCENDING)])
 		elif collection == 'tv':
-			return get_results(TV, {"name" : query})
+			return get_results(TV, {"name" : query},[('series',ASCENDING)])
 		elif collection == 'books':
-			return get_results(Book, {"name" : query})
+			return get_results(Book, {"name" : query},[('name',ASCENDING)])
 		else:
 			print("Invalid Collection: " + collection)
 			return "Invalid Collection: " + collection
 	else:
 		if collection == 'movies':
-			return get_all(Movie)
+			return get_all(Movie,[('name',ASCENDING)])
 		elif collection == 'tv':
-			return get_all(TV)
+			return get_all(TV,[('series',ASCENDING)])
 		elif collection == 'books':
-			return get_all(Book)
+			return get_all(Book,[('name',ASCENDING)])
 		else:
 			print("Invalid Collection: " + collection)
 			return "Invalid Collection: " + collection
